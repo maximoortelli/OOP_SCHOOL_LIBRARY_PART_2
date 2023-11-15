@@ -5,8 +5,8 @@ class Nameable
 end
 
 class Person < Nameable
-  attr_accessor :name, :age
-  attr_reader :id, :rentals
+  attr_accessor :name, :age, :rentals, :id
+  attr_reader :classroom
 
   def initialize(name = 'Unknown', age = 0, parent_permission: true)
     super()
@@ -18,16 +18,26 @@ class Person < Nameable
   end
 
   def correct_name
-    name
+    @name
+  end
+
+  def can_use_services?
+    of_age? || @parent_permission
+  end
+
+  # Método to_h agregado
+  def to_h
+    {
+      'id' => @id,
+      'name' => @name,
+      'age' => @age,
+      'parent_permission' => @parent_permission
+    }
   end
 
   private
 
   def of_age?
     @age >= 18
-  end
-
-  def can_use_services?
-    of_age? || @parent_permission
   end
 end

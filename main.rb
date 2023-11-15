@@ -2,6 +2,8 @@ require_relative 'app'
 require_relative 'menu'
 
 app = App.new
+app.load_from_files
+
 Menu.new(app)
 
 def create_person(app)

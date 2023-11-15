@@ -22,6 +22,12 @@ class Student < Person
     classroom.add_student(self) # Add student to the new classroom
   end
 
+  def to_h
+    super.merge({
+                  classroom: @classroom.label # Cambiado para evitar la recursividad
+                })
+  end
+
   def play_hooky
     '¯(ツ)/¯'
   end
