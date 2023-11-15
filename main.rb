@@ -1,38 +1,19 @@
 require_relative 'app'
+require_relative 'menu'
 
-def display_menu
-  puts 'Welcome to the School Library App'
-  puts 'Please choose an option by entering a number:'
-  puts '1. List all books'
-  puts '2. List all people'
-  puts '3. Create a person'
-  puts '4. Create a book'
-  puts '5. Create a rental'
-  puts '6. List all rentals for a given person id'
-  puts '7. Exit'
-end
-
-def process_option(option, app)
-  case option
-  when 1 then app.list_books
-  when 2 then app.list_people
-  when 3 then create_person(app)
-  when 4 then create_book(app)
-  when 5 then create_rental(app)
-  when 6 then list_rentals_for_person(app)
-  when 7 then app.exit_app
-  else
-    handle_invalid_option
-  end
-end
+app = App.new
+Menu.new(app)
 
 def create_person(app)
   puts 'Create a Person'
   puts 'Do you want to create a student (1) or a teacher (2)? [Input the number]:'
   person_type = gets.chomp.to_i
+
   case person_type
-  when 1 then create_student(app)
-  when 2 then create_teacher(app)
+  when 1
+    create_student(app)
+  when 2
+    create_teacher(app)
   else
     puts 'Invalid person type'
   end
@@ -40,25 +21,24 @@ end
 
 def create_student(app)
   puts 'Create a Student'
-  create_person_by_type(app, Student)
-end
-
-def create_teacher(app)
-  puts 'Create a Teacher'
-  create_person_by_type(app, Teacher)
-end
-
-def create_person_by_type(app, type)
   puts 'Age:'
   age = gets.chomp.to_i
   puts 'Name:'
   name = gets.chomp
+  puts 'Has parent permission? [Y/N]:'
+  parent_permission = gets.chomp.downcase == 'y'
+  app.create_student(name, age, parent_permission)
+end
 
-  options = { name: name, age: age }
-  options[:parent_permission] = true if type == Student
-
-  app.create_person(type, options)
-  puts "#{type} created successfully"
+def create_teacher(app)
+  puts 'Create a Teacher'
+  puts 'Age:'
+  age = gets.chomp.to_i
+  puts 'Name:'
+  name = gets.chomp
+  puts 'Specialization:'
+  specialization = gets.chomp
+  app.create_teacher(name, age, specialization)
 end
 
 def create_book(app)
@@ -92,15 +72,58 @@ def list_rentals_for_person(app)
   app.list_rentals_for_person(person)
 end
 
-def handle_invalid_option
-  puts 'Invalid option. Please choose a valid option.'
+def display_menu
+  puts 'Welcome to the School Library App'
+  puts 'Please choose an option by entering a number:'
+  puts '1. List all books'
+  puts '2. List all people'
+  puts '3. Create a person'
+  puts '4. Create a book'
+  puts '5. Create a rental'
+  puts '6. List all rentals for a given person id'
+  puts '7. Exit'
 end
 
-app = App.new
+# Solucion al error de cyclomatic complexity
+
+def execute_option(option, app)
+  case option
+  when 1
+    list_all_books(app)
+  when 2
+    list_all_people(app)
+  when 3
+    create_person(app)
+  when 4
+    create_book(app)
+  when 5
+    create_rental(app)
+  when 6
+    list_rentals_for_person(app)
+  when 7
+    exit_app(app)
+  else
+    puts 'Invalid option. Please choose a valid option.'
+  end
+end
+
+def list_all_books(app)
+  app.list_books
+end
+
+def list_all_people(app)
+  app.list_people
+end
+
+# ...
+
+def exit_app(app)
+  app.exit_app
+end
 
 loop do
   display_menu
   option = gets.chomp.to_i
-  process_option(option, app)
+  execute_option(option, app)
   puts "\n"
 end

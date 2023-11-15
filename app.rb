@@ -73,11 +73,6 @@ class App
   end
 
   def list_rentals_for_person(person)
-    if person.nil?
-      puts 'Invalid person'
-      return
-    end
-
     rentals = @rentals.select { |rental| rental.person == person }
     if rentals.empty?
       puts "No rentals found for #{person.name}"
